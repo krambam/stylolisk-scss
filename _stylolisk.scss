@@ -1,0 +1,169 @@
+// VARIABLES
+// --------------------------------------------------------------------------------
+
+// regular padding
+$default-padding: 15px;
+// Breakpoints
+$screen-xs-min:              480px;
+$screen-sm-min:              768px;
+$screen-md-min:              992px;
+$screen-lg-min:              1200px;
+// Mobile - Desktop Breakpoint
+$screen-desktop-min: $screen-md-min;
+// Mobile - Container goes 100% width
+$container-dissolve-max: ($screen-desktop-min - 1);
+
+// BELOW: only processing
+// --------------------------------------------------------------------------------
+
+// mediaquery max helper value
+$screen-xxs-max:             ($screen-xs-min - 1);
+$screen-xs-max:              ($screen-sm-min - 1);
+$screen-sm-max:              ($screen-md-min - 1);
+$screen-md-max:              ($screen-lg-min - 1);
+$screen-mobile-max:          ($screen-desktop-min - 1);
+
+// Container sizes
+$factor: 0.098;
+$container-sm: floor( $screen-sm-min * $factor ) * 10;
+$container-md: floor( $screen-md-min * $factor ) * 10;
+$container-lg: floor( $screen-lg-min * $factor ) * 10;
+
+// declare / overwrite this var for bootstrap components
+$grid-gutter-width: $default-padding * 2;
+
+
+
+// ------------------------------------------------------------------------------
+// ABSTRACT HELPER CLASSES
+// -------------------------------------------------------------
+
+%clearfix:after{
+    content: " ";
+    display: table;
+    clear: both;
+}
+%img-responsive{
+    max-width: 100%;
+    height: auto;
+    display: block;
+    vertical-align: middle;
+}
+%indented{
+    margin-left: $default-padding;
+    margin-right: $default-padding;
+}
+%padded{
+    padding-left: $default-padding;
+    padding-right: $default-padding;
+}
+%unpadded{
+    padding-left: 0;
+    padding-right: 0;
+}
+%flex-center{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+%list-unstyled{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+%center-block{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+// -------------------------------------------------------
+// ABSTRACE GRID CLASSES
+// -------------------------------------------------------
+
+// GRID CLASSES
+%container-fluid{
+    @extend %clearfix;
+}
+%container{
+    margin-right: auto;
+    margin-left: auto;
+    @media  (min-width: $screen-sm-min)    { width: $container-sm; }
+    @media  (min-width: $screen-md-min)    { width: $container-md; }
+    @media  (min-width: $screen-lg-min)    { width: $container-lg; }
+    @extend %clearfix;
+}
+%row{
+    margin-left: -$default-padding;
+    margin-right: -$default-padding;
+    @extend %clearfix;
+}
+
+// RESPONSIVE
+// ------------------------------------------------------------------------------
+
+// MEDIA QUERIES
+@mixin responsive-desktop{  @media screen and (min-width: #{$screen-desktop-min})                                   { @content }}
+@mixin responsive-mobile{   @media screen and (max-width: #{$screen-mobile-max})                                    { @content }}
+
+@mixin responsive-lg{       @media screen and (min-width: #{$screen-lg-min})                                        { @content }}
+@mixin responsive-md{       @media screen and (min-width: #{$screen-md-min}) and (max-width: #{$screen-md-max})     { @content }}
+@mixin responsive-sm{       @media screen and (min-width: #{$screen-sm-min}) and (max-width: #{$screen-sm-max})     { @content }}
+@mixin responsive-xs{       @media screen and (min-width: #{$screen-xs-min}) and (max-width: #{$screen-xs-max})     { @content }}
+@mixin responsive-xxs{      @media screen and (max-width: #{$screen-xxs-max})                                       { @content }}
+
+
+
+
+// GRID COL SYSTEM ABSTRACT
+%col-abstract{
+    position: relative;
+    min-height: 1px;
+}
+
+// INIT FLOAT
+@mixin colSetWidthAndFloat($width){
+    width: $width * 100%;
+    float: left;
+}
+
+// SIMPLE "COL"
+@mixin col     ($width)  { @extend %col-abstract;   @include responsive-desktop() { @include colSetWidthAndFloat($width) }}
+@mixin col-lg  ($width)  { @extend %col-abstract;   @include responsive-lg()      { @include colSetWidthAndFloat($width) }}
+@mixin col-md  ($width)  { @extend %col-abstract;   @include responsive-md()      { @include colSetWidthAndFloat($width) }}
+@mixin col-sm  ($width)  { @extend %col-abstract;   @include responsive-sm()      { @include colSetWidthAndFloat($width) }}
+@mixin col-xs  ($width)  { @extend %col-abstract;   @include responsive-xs()      { @include colSetWidthAndFloat($width) }}
+@mixin col-xxs ($width)  { @extend %col-abstract;   @include responsive-xxs()     { @include colSetWidthAndFloat($width) }}
+
+// GRID HIDERS
+%hidden-desktop { @include responsive-desktop   (){ display: none; }}
+%hidden-mobile  { @include responsive-mobile    (){ display: none; }}
+%hidden-lg      { @include responsive-lg        (){ display: none; }}
+%hidden-md      { @include responsive-md        (){ display: none; }}
+%hidden-sm      { @include responsive-sm        (){ display: none; }}
+%hidden-xs      { @include responsive-xs        (){ display: none; }}
+%hidden-xxs     { @include responsive-xxs       (){ display: none; }}
+
+// GRID VISIBLERS
+%visible-desktop { display: none; @include responsive-desktop { display: block; }}
+%visible-mobile  { display: none; @include responsive-mobile  { display: block; }}
+%visible-lg      { display: none; @include responsive-lg      { display: block; }}
+%visible-md      { display: none; @include responsive-md      { display: block; }}
+%visible-sm      { display: none; @include responsive-sm      { display: block; }}
+%visible-xs      { display: none; @include responsive-xs      { display: block; }}
+%visible-xxs     { display: none; @include responsive-xxs     { display: block; }}
+
+
+
+// PRINT MEDIA QUERIES
+%visible-print{
+    display: none  !important;
+    @media print {
+        display: block !important;
+    }
+}
+%hidden-print{
+    @media print {
+        display: none !important;
+    }
+}
