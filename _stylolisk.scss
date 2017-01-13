@@ -1,20 +1,24 @@
+// *** MEDIALISK Stylolisk ***
+
 // VARIABLES
 // --------------------------------------------------------------------------------
 
 // regular padding
-$default-padding: 15px;
+$defaultPadding: 15px;
+
 // Breakpoints
-$screen-xs-min:              480px;
-$screen-sm-min:              768px;
-$screen-md-min:              992px;
-$screen-lg-min:              1200px;
+$screen-xs-min:  480px;
+$screen-sm-min:  768px;
+$screen-md-min:  992px;
+$screen-lg-min: 1200px;
+
+// BELOW: only processing
+// --------------------------------------------------------------------------------
+
 // Mobile - Desktop Breakpoint
 $screen-desktop-min: $screen-md-min;
 // Mobile - Container goes 100% width
 $container-dissolve-max: ($screen-desktop-min - 1);
-
-// BELOW: only processing
-// --------------------------------------------------------------------------------
 
 // mediaquery max helper value
 $screen-xxs-max:             ($screen-xs-min - 1);
@@ -24,24 +28,34 @@ $screen-md-max:              ($screen-lg-min - 1);
 $screen-mobile-max:          ($screen-desktop-min - 1);
 
 // Container sizes
-$factor: 0.098;
-$container-sm: floor( $screen-sm-min * $factor ) * 10;
-$container-md: floor( $screen-md-min * $factor ) * 10;
-$container-lg: floor( $screen-lg-min * $factor ) * 10;
-
-// declare / overwrite this var for bootstrap components
-$grid-gutter-width: $default-padding * 2;
-
-
+$containerSidePadding: 30px;
+$container-sm: $screen-sm-min - $containerSidePadding;
+$container-md: $screen-md-min - $containerSidePadding;
+$container-lg: $screen-lg-min - $containerSidePadding;
 
 // ------------------------------------------------------------------------------
 // ABSTRACT HELPER CLASSES
 // -------------------------------------------------------------
 
-%clearfix:after{
-    content: " ";
-    display: table;
-    clear: both;
+%clearfix{
+    &:before,
+    &:after{
+        content: "";
+        display: table;
+    }
+    &:after{
+        clear: both;
+    }
+}
+@mixin clearfix{
+    &:before,
+    &:after{
+        content: "";
+        display: table;
+    }
+    &:after{
+        clear: both;
+    }
 }
 %img-responsive{
     max-width: 100%;
@@ -50,12 +64,12 @@ $grid-gutter-width: $default-padding * 2;
     vertical-align: middle;
 }
 %indented{
-    margin-left: $default-padding;
-    margin-right: $default-padding;
+    margin-left: $defaultPadding;
+    margin-right: $defaultPadding;
 }
 %padded{
-    padding-left: $default-padding;
-    padding-right: $default-padding;
+    padding-left: $defaultPadding;
+    padding-right: $defaultPadding;
 }
 %unpadded{
     padding-left: 0;
@@ -75,7 +89,9 @@ $grid-gutter-width: $default-padding * 2;
     margin-left: auto;
     margin-right: auto;
 }
-
+@mixin importantPseudoQuery{
+    @media screen and (min-width: 0px){ @content } // only hack to boost selector priority
+}
 
 // -------------------------------------------------------
 // ABSTRACE GRID CLASSES
@@ -93,9 +109,9 @@ $grid-gutter-width: $default-padding * 2;
     @media  (min-width: $screen-lg-min)    { width: $container-lg; }
     @extend %clearfix;
 }
-%row{
-    margin-left: -$default-padding;
-    margin-right: -$default-padding;
+%simple-row{
+    margin-left: -$defaultPadding;
+    margin-right: -$defaultPadding;
     @extend %clearfix;
 }
 
@@ -103,37 +119,31 @@ $grid-gutter-width: $default-padding * 2;
 // ------------------------------------------------------------------------------
 
 // MEDIA QUERIES
-@mixin responsive-desktop{  @media screen and (min-width: #{$screen-desktop-min})                                   { @content }}
-@mixin responsive-mobile{   @media screen and (max-width: #{$screen-mobile-max})                                    { @content }}
-
-@mixin responsive-lg{       @media screen and (min-width: #{$screen-lg-min})                                        { @content }}
-@mixin responsive-md{       @media screen and (min-width: #{$screen-md-min}) and (max-width: #{$screen-md-max})     { @content }}
-@mixin responsive-sm{       @media screen and (min-width: #{$screen-sm-min}) and (max-width: #{$screen-sm-max})     { @content }}
-@mixin responsive-xs{       @media screen and (min-width: #{$screen-xs-min}) and (max-width: #{$screen-xs-max})     { @content }}
-@mixin responsive-xxs{      @media screen and (max-width: #{$screen-xxs-max})                                       { @content }}
+@mixin responsive-desktop{  @media screen and (min-width: #{$screen-desktop-min})                               { @content }}
+@mixin responsive-mobile{   @media screen and (max-width: #{$screen-mobile-max})                                { @content }}
+@mixin responsive-lg{       @media screen and (min-width: #{$screen-lg-min})                                    { @content }}
+@mixin responsive-md{       @media screen and (min-width: #{$screen-md-min}) and (max-width: #{$screen-md-max}) { @content }}
+@mixin responsive-sm{       @media screen and (min-width: #{$screen-sm-min}) and (max-width: #{$screen-sm-max}) { @content }}
+@mixin responsive-xs{       @media screen and (min-width: #{$screen-xs-min}) and (max-width: #{$screen-xs-max}) { @content }}
+@mixin responsive-xxs{      @media screen and (max-width: #{$screen-xxs-max})                                   { @content }}
 
 
 
 
 // GRID COL SYSTEM ABSTRACT
-%col-abstract{
-    position: relative;
+@mixin col-abstract{
+    float: left;
     min-height: 1px;
 }
-
-// INIT FLOAT
-@mixin colSetWidthAndFloat($width){
-    width: $width * 100%;
-    float: left;
-}
+%col-abstract{ @include col-abstract; }
 
 // SIMPLE "COL"
-@mixin col     ($width)  { @extend %col-abstract;   @include responsive-desktop() { @include colSetWidthAndFloat($width) }}
-@mixin col-lg  ($width)  { @extend %col-abstract;   @include responsive-lg()      { @include colSetWidthAndFloat($width) }}
-@mixin col-md  ($width)  { @extend %col-abstract;   @include responsive-md()      { @include colSetWidthAndFloat($width) }}
-@mixin col-sm  ($width)  { @extend %col-abstract;   @include responsive-sm()      { @include colSetWidthAndFloat($width) }}
-@mixin col-xs  ($width)  { @extend %col-abstract;   @include responsive-xs()      { @include colSetWidthAndFloat($width) }}
-@mixin col-xxs ($width)  { @extend %col-abstract;   @include responsive-xxs()     { @include colSetWidthAndFloat($width) }}
+@mixin simple-col     ($width)  { @extend %col-abstract;   @include responsive-desktop() { width: $width * 100% }}
+@mixin simple-col-lg  ($width)  { @extend %col-abstract;   @include responsive-lg()      { width: $width * 100% }}
+@mixin simple-col-md  ($width)  { @extend %col-abstract;   @include responsive-md()      { width: $width * 100% }}
+@mixin simple-col-sm  ($width)  { @extend %col-abstract;   @include responsive-sm()      { width: $width * 100% }}
+@mixin simple-col-xs  ($width)  { @extend %col-abstract;   @include responsive-xs()      { width: $width * 100% }}
+@mixin simple-col-xxs ($width)  { @extend %col-abstract;   @include responsive-xxs()     { width: $width * 100% }}
 
 // GRID HIDERS
 %hidden-desktop { @include responsive-desktop   (){ display: none; }}
@@ -154,16 +164,63 @@ $grid-gutter-width: $default-padding * 2;
 %visible-xxs     { display: none; @include responsive-xxs     { display: block; }}
 
 
+// GRID SYSTEM 2 (NTH-CHIld BASED)
+// -------------------------------
 
-// PRINT MEDIA QUERIES
-%visible-print{
-    display: none  !important;
-    @media print {
-        display: block !important;
+@mixin incColConfig($colAmount, $width, $marginRight){
+    @include col-abstract;
+    width: $width;
+    margin-right: $marginRight;
+    &:nth-child(#{$colAmount}n)     { margin-right: 0; }
+    &:nth-child(#{$colAmount}n + 1) { clear: left; }
+}
+@mixin colFloated($cols, $gutterWidth: null) {
+    @if $gutterWidth == null {
+        $gutterWidth: $defaultPadding * 2   / $screen-lg-min * 100%;
+    } @else if unit($gutterWidth) == 'px' {
+        $gutterWidth: $gutterWidth          / $screen-lg-min * 100%;
+    }
+    // main
+    @if type-of($cols) == 'number' {
+        $actualColWidth:     ( 100% - ($cols - 1) * $gutterWidth ) / $cols; // 100% minus all gutter width / amount times margins
+        @include responsive-desktop { @include incColConfig($cols, $actualColWidth, $gutterWidth); }
+    } @else{
+        @each $size, $cols in $cols {
+            $actualColWidth: ( 100% - ($cols - 1) * $gutterWidth ) / $cols; // 100% minus all gutter width / amount times margins
+            @if $size == 'lg' {
+                @include responsive-lg { @include incColConfig($cols, $actualColWidth, $gutterWidth); }
+            } @else if $size == 'md' {
+                @include responsive-md { @include incColConfig($cols, $actualColWidth, $gutterWidth); }
+            } @else if $size == 'sm' {
+                @include responsive-sm { @include incColConfig($cols, $actualColWidth, $gutterWidth); }
+            } @else if $size == 'xs' {
+                @include responsive-xs { @include incColConfig($cols, $actualColWidth, $gutterWidth); }
+            } @else if $size == 'xxs' {
+                @include responsive-xxs { @include incColConfig($cols, $actualColWidth, $gutterWidth); }
+            }
+        }
     }
 }
-%hidden-print{
-    @media print {
-        display: none !important;
+@mixin row($cols, $gutterWidth: null){
+    $minWidth: $screen-desktop-min;
+    @if type-of($cols) == 'map' {
+        @if map-has-key($cols, xxs){
+            $minWidth: 0;
+        } @else if map-has-key($cols, xs){
+            $minWidth: $screen-xs-min;
+        } @else if map-has-key($cols, sm){
+            $minWidth: $screen-sm-min;
+        }
+    }
+    @media screen and (min-width: $minWidth){
+        @include clearfix;
+        display: flex;
+        flex-flow: row wrap;
+        > * {
+            width: 100%; // for media queries base for flexbox
+        }
+    }
+    > *{
+        @include colFloated($cols, $gutterWidth);
     }
 }
